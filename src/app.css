@@ -580,6 +580,180 @@
   display: block;
 }
 
+/* Cat-Themed Buttons and Micro-interactions */
+.theme-cat .btn {
+  position: relative;
+  overflow: visible !important;
+}
+
+/* Primary Button Ears */
+.theme-cat .btn-primary::before {
+  content: "";
+  position: absolute;
+  top: -8px;
+  left: 14px;
+  width: 14px;
+  height: 12px;
+  background: radial-gradient(circle at 50% 100%, #ffb3c1 35%, var(--color-accent) 40%);
+  clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
+  transform-origin: bottom center;
+  transition: transform 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  z-index: 1;
+}
+.theme-cat .btn-primary::after {
+  content: "";
+  position: absolute;
+  top: -8px;
+  right: 14px;
+  width: 14px;
+  height: 12px;
+  background: radial-gradient(circle at 50% 100%, #ffb3c1 35%, var(--color-accent) 40%);
+  clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
+  transform-origin: bottom center;
+  transition: transform 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  z-index: 1;
+}
+
+/* Secondary Button Ears */
+.theme-cat .btn-secondary::before {
+  content: "";
+  position: absolute;
+  top: -8px;
+  left: 14px;
+  width: 14px;
+  height: 12px;
+  background: radial-gradient(circle at 50% 100%, #ffb3c1 35%, var(--bg-tertiary) 40%);
+  clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
+  transform-origin: bottom center;
+  transition: transform 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  z-index: 1;
+}
+.theme-cat .btn-secondary::after {
+  content: "";
+  position: absolute;
+  top: -8px;
+  right: 14px;
+  width: 14px;
+  height: 12px;
+  background: radial-gradient(circle at 50% 100%, #ffb3c1 35%, var(--bg-tertiary) 40%);
+  clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
+  transform-origin: bottom center;
+  transition: transform 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  z-index: 1;
+}
+
+/* Button Animations on Hover and Click */
+.theme-cat .btn:hover::before {
+  transform: rotate(-12deg) scaleY(1.1);
+}
+.theme-cat .btn:hover::after {
+  transform: rotate(12deg) scaleY(1.1);
+}
+.theme-cat .btn:active::before {
+  transform: rotate(-25deg) scaleY(0.85);
+}
+.theme-cat .btn:active::after {
+  transform: rotate(25deg) scaleY(0.85);
+}
+
+/* FAB as a cute Cat Head */
+.theme-cat .fab {
+  position: relative;
+  overflow: visible !important;
+}
+.theme-cat .fab::before {
+  content: "";
+  position: absolute;
+  top: -10px;
+  left: 6px;
+  width: 18px;
+  height: 15px;
+  background: radial-gradient(circle at 50% 100%, #ffb3c1 35%, var(--color-accent) 40%);
+  clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
+  transform-origin: bottom center;
+  transition: transform 0.2s ease;
+  z-index: 1;
+}
+.theme-cat .fab::after {
+  content: "";
+  position: absolute;
+  top: -10px;
+  right: 6px;
+  width: 18px;
+  height: 15px;
+  background: radial-gradient(circle at 50% 100%, #ffb3c1 35%, var(--color-accent) 40%);
+  clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
+  transform-origin: bottom center;
+  transition: transform 0.2s ease;
+  z-index: 1;
+}
+.theme-cat .fab:hover::before {
+  transform: rotate(-15deg) scaleY(1.1);
+}
+.theme-cat .fab:hover::after {
+  transform: rotate(15deg) scaleY(1.1);
+}
+.theme-cat .fab:active::before {
+  transform: rotate(-28deg) scaleY(0.8);
+}
+.theme-cat .fab:active::after {
+  transform: rotate(28deg) scaleY(0.8);
+}
+
+/* Category Badges with ears when selected */
+.theme-cat .category-badge.selected {
+  position: relative;
+  overflow: visible !important;
+}
+.theme-cat .category-badge.selected::before {
+  content: "";
+  position: absolute;
+  top: -5px;
+  left: 8px;
+  width: 8px;
+  height: 7px;
+  background: var(--color-accent);
+  clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
+  transform-origin: bottom center;
+  transition: transform 0.2s ease;
+}
+.theme-cat .category-badge.selected::after {
+  content: "";
+  position: absolute;
+  top: -5px;
+  right: 8px;
+  width: 8px;
+  height: 7px;
+  background: var(--color-accent);
+  clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
+  transform-origin: bottom center;
+  transition: transform 0.2s ease;
+}
+
+/* Bottom Navigation Active Button Paw Indicator */
+.theme-cat .nav-btn.active::before {
+  content: "🐾";
+  position: absolute;
+  top: 4px;
+  font-size: 0.82rem;
+  opacity: 0.95;
+  animation: pawBounce 0.45s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+@keyframes pawBounce {
+  0% {
+    transform: translateY(6px) scale(0.4);
+    opacity: 0;
+  }
+  50% {
+    transform: translateY(-4px) scale(1.2);
+  }
+  100% {
+    transform: translateY(0) scale(1);
+    opacity: 0.95;
+  }
+}
+
 /* Print optimizations */
 @media print {
   body {

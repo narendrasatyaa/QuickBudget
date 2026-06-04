@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { showAddModal } from '../store';
+  import { showAddModal, theme } from '../store';
 
   function openModal() {
     $showAddModal = true;
@@ -7,10 +7,21 @@
 </script>
 
 <button class="fab" onclick={openModal} aria-label="Add transaction">
-  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
-    <line x1="12" y1="5" x2="12" y2="19"></line>
-    <line x1="5" y1="12" x2="19" y2="12"></line>
-  </svg>
+  {#if $theme === 'cat'}
+    <!-- Cat paw print icon -->
+    <svg viewBox="0 0 24 24" fill="currentColor">
+      <path d="M12 12.5c-2.4 0-4 1.6-4 3.8 0 2.5 1.8 3.7 4 3.7s4-1.2 4-3.7c0-2.2-1.6-3.8-4-3.8z" />
+      <circle cx="6" cy="11.5" r="1.6" />
+      <circle cx="9.5" cy="7.5" r="1.8" />
+      <circle cx="14.5" cy="7.5" r="1.8" />
+      <circle cx="18" cy="11.5" r="1.6" />
+    </svg>
+  {:else}
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+      <line x1="12" y1="5" x2="12" y2="19"></line>
+      <line x1="5" y1="12" x2="19" y2="12"></line>
+    </svg>
+  {/if}
 </button>
 
 <style>
