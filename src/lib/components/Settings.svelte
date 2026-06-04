@@ -1,9 +1,22 @@
 <script lang="ts">
-  import { theme, transactions, clearTx, loadTransactions } from "../store";
+  import { theme, transactions, clearTx, loadTransactions, activePage } from "../store";
   import * as db from "../db";
   import type { AppTheme } from "../types";
+  import { supabase } from "../analytics";
 
   let importInput: HTMLInputElement;
+
+  async function handleSignOut() {
+    try {
+      const confirm = window.confirm("Are you sure you want to sign out?");
+      if (confirm) {
+        const { error } = await supabase.auth.signOut();
+        if (error) throw error;
+      }
+    } catch (err: any) {
+      alert(`Failed to sign out: ${err.message || err}`);
+    }
+  }
 
   const themesList: {
     id: AppTheme;
@@ -234,6 +247,25 @@
       onchange={handleImportData}
       style="display: none;"
     />
+  </div>
+
+  <div class="section-title">Account</div>
+  <div class="list-group">
+    <button class="list-item clickable" onclick={handleSignOut}>
+      <div>
+        <div class="item-title">Sign Out</div>
+        <div class="item-desc">Sign out of your account (data remains saved locally)</div>
+      </div>
+      <svg
+        class="chevron"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+      >
+        <path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4M16 17l5-5-5-5M21 12H9" />
+      </svg>
+    </button>
   </div>
 
   <div class="section-title">Destructive Actions</div>

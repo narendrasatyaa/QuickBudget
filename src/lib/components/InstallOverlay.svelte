@@ -21,15 +21,8 @@
       activeTab = "android";
     }
 
-    // Bypass blocker for local development environments (e.g. localhost, 127.0.0.1, 192.168.*, 10.*)
-    const hostname = window.location.hostname;
-    const isLocal = hostname === 'localhost' || 
-                    hostname === '127.0.0.1' || 
-                    hostname.startsWith('192.168.') ||
-                    hostname.startsWith('10.');
-
-    // Force mandatory installation for all devices unless in local dev mode
-    if (!isStandalone && !isLocal) {
+    // Force mandatory installation for all devices
+    if (!isStandalone) {
       show = true;
     }
   });

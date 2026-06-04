@@ -1,8 +1,11 @@
 import { writable, derived } from 'svelte/store';
 import type { Transaction, Summary, Page, AppTheme } from './types';
 import * as db from './db';
+import { pingUser, supabase } from './analytics';
 
 // Core State Stores
+export const userSession = writable<any | null>(null);
+export const isAuthLoading = writable<boolean>(true);
 export const transactions = writable<Transaction[]>([]);
 export const activePage = writable<Page>('dashboard');
 export const showAddModal = writable<boolean>(false);
@@ -144,3 +147,69 @@ theme.subscribe(($theme) => {
     }
   }
 });
+
+// Analytics tracking subscription
+let lastPingTime = 0;
+let lastPingTheme = '';
+let lastPingCount = -1;
+
+function triggerPing(themeVal: AppTheme, txList: Transaction[]) {
+  const now = Date.now();
+  const txCount = txList.length;
+  
+  // Throttle pings to at most once every 5 seconds, unless theme or txCount changed
+  if (
+    themeVal === lastPingTheme && 
+    txCount === lastPingCount && 
+    now - lastPingTime < 5000
+  ) {
+    return;
+  }
+  
+  lastPingTime = now;
+  lastPingTheme = themeVal;
+  lastPingCount = txCount;
+  
+  pingUser(themeVal, txCount);
+}
+
+if (typeof window !== 'undefined') {
+  let currentTheme: AppTheme = 'light';
+  let currentTx: Transaction[] = [];
+  
+  theme.subscribe(($theme) => {
+    currentTheme = $theme;
+    triggerPing(currentTheme, currentTx);
+  });
+  
+  transactions.subscribe(($transactions) => {
+    currentTx = $transactions;
+    triggerPing(currentTheme, currentTx);
+  });
+
+  // Deteksi apakah aplikasi dibuka sebagai PWA Standalone di HP
+  const isPWA = typeof window !== 'undefined' && (
+    window.matchMedia('(display-mode: standalone)').matches || 
+    (window.navigator as any).standalone === true
+  );
+
+  // Watch Auth State Changes
+  const hasSupabaseCreds = !!(import.meta.env.VITE_SUPABASE_URL && import.meta.env.VITE_SUPABASE_ANON_KEY);
+  if (!isPWA || !hasSupabaseCreds) {
+    // Jalankan offline lokal jika dibuka di browser biasa / Supabase belum diatur
+    userSession.set({ id: 'local-user', email: 'local@quickbudget.offline' });
+    isAuthLoading.set(false);
+  } else {
+    // Wajibkan login jika dijalankan sebagai PWA Mandiri di HP
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      userSession.set(session?.user ?? null);
+      isAuthLoading.set(false);
+    });
+
+    supabase.auth.onAuthStateChange((_event, session) => {
+      userSession.set(session?.user ?? null);
+      isAuthLoading.set(false);
+    });
+  }
+}
+
