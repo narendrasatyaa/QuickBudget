@@ -1,17 +1,17 @@
 import { writable, derived } from 'svelte/store';
-import type { Transaction, Summary } from './types';
+import type { Transaction, Summary, Page, AppTheme } from './types';
 import * as db from './db';
 
 // Core State Stores
 export const transactions = writable<Transaction[]>([]);
-export const activePage = writable<'dashboard' | 'history' | 'settings'>('dashboard');
+export const activePage = writable<Page>('dashboard');
 export const showAddModal = writable<boolean>(false);
 export const editingTransaction = writable<Transaction | null>(null);
-export const theme = writable<'light' | 'dark'>(
+export const theme = writable<AppTheme>(
   typeof window !== 'undefined'
-    ? (localStorage.getItem('qb-theme') as 'light' | 'dark') || 
+    ? (localStorage.getItem('qb-theme') as AppTheme) || 
       (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light')
-    : 'dark'
+    : 'light'
 );
 export const installPrompt = writable<any | null>(null);
 
@@ -128,6 +128,15 @@ export const weeklyData = derived(transactions, ($transactions) => {
 theme.subscribe(($theme) => {
   if (typeof document !== 'undefined') {
     localStorage.setItem('qb-theme', $theme);
+    
+    // Remove all theme classes first
+    const themeClasses = ['theme-light', 'theme-dark', 'theme-cute', 'theme-minimalist', 'theme-vintage', 'theme-forest', 'theme-cat'];
+    themeClasses.forEach(cls => document.documentElement.classList.remove(cls));
+    
+    // Add current theme class
+    document.documentElement.classList.add(`theme-${$theme}`);
+    
+    // Maintain standard dark class compatibility
     if ($theme === 'dark') {
       document.documentElement.classList.add('dark');
     } else {

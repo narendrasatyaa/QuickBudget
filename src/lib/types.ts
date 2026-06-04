@@ -19,3 +19,8 @@ export interface DailySummary {
   income: number;
   expense: number;
 }
+
+export type Page = 'dashboard' | 'history' | 'report' | 'settings';
+
+export type AppTheme = 'light' | 'dark' | 'cute' | 'minimalist' | 'vintage' | 'forest' | 'cat';
+

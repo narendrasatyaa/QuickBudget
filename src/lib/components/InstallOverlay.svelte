@@ -21,8 +21,15 @@
       activeTab = "android";
     }
 
-    // Block screen on iOS and Android if not running in standalone mode
-    if ((isIOS || isAndroid) && !isStandalone) {
+    // Bypass blocker for local development environments (e.g. localhost, 127.0.0.1, 192.168.*, 10.*)
+    const hostname = window.location.hostname;
+    const isLocal = hostname === 'localhost' || 
+                    hostname === '127.0.0.1' || 
+                    hostname.startsWith('192.168.') ||
+                    hostname.startsWith('10.');
+
+    // Force mandatory installation for all devices unless in local dev mode
+    if (!isStandalone && !isLocal) {
       show = true;
     }
   });
@@ -67,7 +74,7 @@
           class:active={activeTab === "ios"}
           onclick={() => (activeTab = "ios")}
         >
-          iPhone / iPad
+          iPhone / iOS
         </button>
         <button
           class="tab-btn"
@@ -76,6 +83,13 @@
         >
           Android
         </button>
+        <!-- <button
+          class="tab-btn"
+          class:active={activeTab === "desktop"}
+          onclick={() => (activeTab = "desktop")}
+        >
+          Desktop / PC
+        </button> -->
       </div>
 
       <!-- Tab Content Area -->
@@ -116,7 +130,7 @@
               </span>
             </div>
           </div>
-        {:else}
+        {:else if activeTab === "android"}
           <div class="instructions-list">
             {#if hasPrompt}
               <div class="android-native-box">

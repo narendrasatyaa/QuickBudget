@@ -1,11 +1,78 @@
 <script lang="ts">
   import { theme, transactions, clearTx, loadTransactions } from "../store";
   import * as db from "../db";
+  import type { AppTheme } from "../types";
 
   let importInput: HTMLInputElement;
 
-  function toggleTheme() {
-    $theme = $theme === "dark" ? "light" : "dark";
+  const themesList: {
+    id: AppTheme;
+    label: string;
+    bg: string;
+    accent: string;
+    income: string;
+    expense: string;
+  }[] = [
+    {
+      id: "light",
+      label: "Classic Light",
+      bg: "#f2f2f7",
+      accent: "#007aff",
+      income: "#34c759",
+      expense: "#ff3b30",
+    },
+    {
+      id: "dark",
+      label: "Classic Dark",
+      bg: "#1c1c1e",
+      accent: "#0a84ff",
+      income: "#30d158",
+      expense: "#ff453a",
+    },
+    {
+      id: "cute",
+      label: "Cute Pastel",
+      bg: "#fff0f3",
+      accent: "#ff7597",
+      income: "#7cd197",
+      expense: "#ff8b94",
+    },
+    {
+      id: "minimalist",
+      label: "Minimalist",
+      bg: "#ffffff",
+      accent: "#000000",
+      income: "#000000",
+      expense: "#000000",
+    },
+    {
+      id: "vintage",
+      label: "Vintage Warm",
+      bg: "#f5eedc",
+      accent: "#b07d62",
+      income: "#4f772d",
+      expense: "#bc4749",
+    },
+    {
+      id: "forest",
+      label: "Forest Calm",
+      bg: "#e8ece9",
+      accent: "#40916c",
+      income: "#2d6a4f",
+      expense: "#b7094c",
+    },
+    {
+      id: "cat",
+      label: "Kucing Lucu 🐾",
+      bg: "#fdf6ed",
+      accent: "#e7a35c",
+      income: "#6d9773",
+      expense: "#d96055",
+    },
+  ];
+
+  function selectTheme(themeId: AppTheme) {
+    $theme = themeId;
   }
 
   async function handleClearData() {
@@ -88,22 +155,43 @@
 </script>
 
 <div class="settings-container">
-  <div class="section-title">Preferences</div>
-  <div class="list-group">
-    <div class="list-item">
-      <div>
-        <div class="item-title">Dark Mode</div>
-        <div class="item-desc">Adjust user interface color scheme</div>
-      </div>
+  <div class="section-title">PILIH TEMA APLIKASI</div>
+  <div class="theme-grid">
+    {#each themesList as th}
       <button
-        class="toggle-btn"
-        class:active={$theme === "dark"}
-        onclick={toggleTheme}
-        aria-label="Toggle dark mode"
+        class="theme-card"
+        class:active={$theme === th.id}
+        onclick={() => selectTheme(th.id)}
+        aria-label="Select {th.label} theme"
       >
-        <span class="toggle-thumb"></span>
+        <span class="theme-label">{th.label}</span>
+        <div class="theme-preview">
+          <span
+            class="preview-dot"
+            style="background-color: {th.bg};"
+            title="Background"
+          ></span>
+          <span
+            class="preview-dot"
+            style="background-color: {th.accent};"
+            title="Accent"
+          ></span>
+          <span
+            class="preview-dot"
+            style="background-color: {th.income};"
+            title="Income"
+          ></span>
+          <span
+            class="preview-dot"
+            style="background-color: {th.expense};"
+            title="Expense"
+          ></span>
+        </div>
+        {#if $theme === th.id}
+          <div class="active-indicator">✓</div>
+        {/if}
       </button>
-    </div>
+    {/each}
   </div>
 
   <div class="section-title">Data Management</div>
@@ -172,7 +260,7 @@
   </div>
 
   <div class="about-section">
-    <div class="app-version">QuickBudget v1.0.0</div>
+    <div class="app-version">QuickBudget v2.0.0</div>
     <div class="app-status">Offline Budget App</div>
   </div>
 </div>
@@ -225,39 +313,6 @@
     color: var(--text-secondary);
   }
 
-  /* Custom switch toggle */
-  .toggle-btn {
-    width: 51px;
-    height: 31px;
-    border-radius: 15.5px;
-    background-color: var(--bg-tertiary);
-    border: none;
-    position: relative;
-    cursor: pointer;
-    transition: background-color 0.25s ease;
-    padding: 0;
-  }
-
-  .toggle-btn.active {
-    background-color: #34c759;
-  }
-
-  .toggle-thumb {
-    width: 27px;
-    height: 27px;
-    border-radius: 50%;
-    background-color: #ffffff;
-    position: absolute;
-    top: 2px;
-    left: 2px;
-    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.15);
-    transition: transform 0.25s cubic-bezier(0.25, 0.8, 0.25, 1);
-  }
-
-  .toggle-btn.active .toggle-thumb {
-    transform: translateX(20px);
-  }
-
   /* Danger overrides */
   .danger:active {
     background-color: var(--color-expense-light);
@@ -289,5 +344,76 @@
     font-size: 0.75rem;
     color: var(--text-secondary);
     opacity: 0.7;
+  }
+
+  /* Theme Picker Grid */
+  .theme-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+    padding: 0.5rem 0.25rem 1rem 0.25rem;
+  }
+
+  .theme-card {
+    background-color: var(--bg-secondary);
+    border: 1.5px solid var(--border-color);
+    border-radius: 12px;
+    padding: 0.85rem;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    position: relative;
+    outline: none;
+    text-align: left;
+    width: 100%;
+  }
+
+  .theme-card:active {
+    transform: scale(0.96);
+  }
+
+  .theme-card.active {
+    border-color: var(--color-accent);
+    box-shadow: 0 0 0 3px var(--color-accent-light);
+  }
+
+  .theme-label {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--text-primary);
+  }
+
+  .theme-preview {
+    display: flex;
+    gap: 4px;
+    align-items: center;
+    width: 100%;
+    margin-top: auto;
+  }
+
+  .preview-dot {
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    border: 1px solid rgba(0, 0, 0, 0.08);
+  }
+
+  .active-indicator {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    width: 16px;
+    height: 16px;
+    background-color: var(--color-accent);
+    color: #ffffff;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.65rem;
+    font-weight: bold;
   }
 </style>

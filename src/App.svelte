@@ -11,6 +11,7 @@
   import Splash from './lib/components/Splash.svelte';
   import Dashboard from './lib/components/Dashboard.svelte';
   import TransactionList from './lib/components/TransactionList.svelte';
+  import Report from './lib/components/Report.svelte';
   import Settings from './lib/components/Settings.svelte';
   import FAB from './lib/components/FAB.svelte';
   import AddTransactionForm from './lib/components/AddTransactionForm.svelte';
@@ -18,9 +19,9 @@
   import InstallOverlay from './lib/components/InstallOverlay.svelte';
   import { FontAwesomeIcon } from '@fortawesome/svelte-fontawesome';
   import { library } from '@fortawesome/fontawesome-svg-core';
-  import { faHouse, faClock, faGear } from '@fortawesome/free-solid-svg-icons';
+  import { faHouse, faClock, faGear, faChartPie } from '@fortawesome/free-solid-svg-icons';
 
-  library.add(faHouse, faClock, faGear);
+  library.add(faHouse, faClock, faGear, faChartPie);
 
   onMount(() => {
     // 1. Initialise and load transaction records from IndexedDB
@@ -54,6 +55,7 @@
     switch(page) {
       case 'dashboard': return 'QuickBudget';
       case 'history': return 'History';
+      case 'report': return 'Monthly Report';
       case 'settings': return 'Settings';
       default: return 'QuickBudget';
     }
@@ -75,6 +77,8 @@
     <Dashboard />
   {:else if $activePage === 'history'}
     <TransactionList />
+  {:else if $activePage === 'report'}
+    <Report />
   {:else if $activePage === 'settings'}
     <Settings />
   {/if}
@@ -100,7 +104,7 @@
     class:active={$activePage === 'dashboard'} 
     onclick={() => $activePage = 'dashboard'}
   >
-  <FontAwesomeIcon icon="house" />
+    <FontAwesomeIcon icon="house" />
     <span>Dashboard</span>
   </button>
   
@@ -111,6 +115,15 @@
   >
     <FontAwesomeIcon icon="clock" />
     <span>History</span>
+  </button>
+  
+  <button 
+    class="nav-btn" 
+    class:active={$activePage === 'report'} 
+    onclick={() => $activePage = 'report'}
+  >
+    <FontAwesomeIcon icon="chart-pie" />
+    <span>Report</span>
   </button>
   
   <button 
